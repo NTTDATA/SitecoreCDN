@@ -1,0 +1,1 @@
+Please see the NTT DATA Sitecore Connector.pdf for information on installation and configuration.
