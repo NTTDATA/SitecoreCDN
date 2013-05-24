@@ -133,11 +133,11 @@ namespace NTTData.SitecoreCDN.Providers
         {
             //string versionKey = inputUrl + "_v";
             //string updatedKey = inputUrl + "_d";
-
+            string cachedKey = string.Concat(WebUtil.GetScheme(), inputUrl);
             try
             {
 
-                string cachedUrl = _cache.GetUrl(inputUrl);
+                string cachedUrl = _cache.GetUrl(cachedKey);
 
                 if (!string.IsNullOrEmpty(cachedUrl))
                 {
@@ -250,7 +250,7 @@ namespace NTTData.SitecoreCDN.Providers
 
                 string outputUrl = url.ToString().TrimEnd('?');//prevent trailing ? with blank querystring
 
-                _cache.SetUrl(inputUrl, outputUrl);
+                _cache.SetUrl(cachedKey, outputUrl);
 
                 return outputUrl;
             }
