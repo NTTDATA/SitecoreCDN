@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NTTData.SitecoreCDN.Configuration;
 using Sitecore.Resources.Media;
 using NTTData.SitecoreCDN.Switchers;
 using Sitecore.Text;
@@ -21,38 +22,41 @@ namespace NTTData.SitecoreCDN.Providers
         /// <returns></returns>
         public override string GetMediaUrl(Sitecore.Data.Items.MediaItem item, MediaUrlOptions options)
         {
-            string hostname = CDNManager.GetCDNHostName();
-            string url = base.GetMediaUrl(item, options);
-
-            bool shouldReplace = !string.IsNullOrEmpty(hostname) && // cdnHostname exists for site
-                Sitecore.Context.PageMode.IsNormal;  // PageMode is normal
-
-            bool dontReplace = !CDNManager.IsMediaPubliclyAccessible(item) ||  // media is publicly accessible
-                CDNManager.IsMediaAnalyticsTracked(item); // media is analytics tracked
-
-            CDNUrlState contextState = CDNUrlSwitcher.CurrentValue;
-
-            if (contextState == CDNUrlState.Enabled)
+            if (CDNSettings.Enabled)
             {
-                shouldReplace = true;
-            }
-            else if (contextState == CDNUrlState.Disabled)
-            {
-                UrlString url2 = new UrlString(url);
-                url2[CDNManager.StopToken] = "1";
-                url = url2.ToString();
-                shouldReplace = false;
-            }
+                string hostname = CDNManager.GetCDNHostName();
+                string url = base.GetMediaUrl(item, options);
 
-            
-            if (shouldReplace && !dontReplace) // media not DMS tracked
-            {
-                return CDNManager.ReplaceMediaUrl(url, hostname);
+                bool shouldReplace = !string.IsNullOrEmpty(hostname) && // cdnHostname exists for site
+                    Sitecore.Context.PageMode.IsNormal;  // PageMode is normal
+
+                bool dontReplace = !CDNManager.IsMediaPubliclyAccessible(item) ||  // media is publicly accessible
+                    CDNManager.IsMediaAnalyticsTracked(item); // media is analytics tracked
+
+                CDNUrlState contextState = CDNUrlSwitcher.CurrentValue;
+
+                if (contextState == CDNUrlState.Enabled)
+                {
+                    shouldReplace = true;
+                }
+                else if (contextState == CDNUrlState.Disabled)
+                {
+                    UrlString url2 = new UrlString(url);
+                    url2[CDNManager.StopToken] = "1";
+                    url = url2.ToString();
+                    shouldReplace = false;
+                }
+
+                if (shouldReplace && !dontReplace) // media not DMS tracked
+                {
+                    return CDNManager.ReplaceMediaUrl(url, hostname);
+                }
+                else
+                {
+                    return url;
+                }
             }
-            else
-            {
-                return url;
-            }
+            return base.GetMediaUrl(item, options);
         }
     }
 }
