@@ -37,7 +37,7 @@ namespace NTTData.SitecoreCDN.Caching
 
         public void SetResult(string path, bool result)
         {
-            this.SetObject(path, result);
+            this.SetObject(path, result, sizeof(bool));
             //this.SetString(path, url, DateTime.UtcNow.Add(_cacheTime));
         }
 
