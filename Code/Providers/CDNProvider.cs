@@ -393,7 +393,7 @@ namespace NTTData.SitecoreCDN.Providers
         {
             try
             {
-                if (!Settings.Analytics.Enabled)
+                if (!Settings.GetBoolSetting("Xdb.Enabled", true))
                     return false;
 
                 string cacheKey = media.ID.ToString() + "_tracked";
