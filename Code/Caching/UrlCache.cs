@@ -19,7 +19,7 @@ namespace NTTData.SitecoreCDN.Caching
         public UrlCache(string name, long maxSize)
             : base(name, maxSize)
         {
-            this.InnerCache.Scavengable = true;
+            //this.InnerCache.Scavengable = true;
             _cacheTime = Settings.GetTimeSpanSetting("SitecoreCDN.UrlVersionCacheTime", "00:05:00");
         }
 
